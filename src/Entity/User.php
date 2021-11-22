@@ -8,11 +8,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 #[ApiResource(
+    attributes: [
+        "security" => "is_granted('ROLE_ADMIN') or object == user",
+        "security_message" => "Vous n'êtes pas propriétaire de ce contenu !"
+    ],
     collectionOperations: [
         "get" => [
             "normalization_context" => [
@@ -45,6 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      */
     #[Groups(["read:User:collection", "read:User:item"])]
+    #[Email(message: "Email non valide !")]
     private $email;
 
     /**
@@ -57,6 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
+    #[Length(min: 6, minMessage: "Le mot de passe doit contenir au moins 6 caractères !")]
     private $password;
 
     public function getId(): ?int

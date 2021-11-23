@@ -13,7 +13,25 @@ use Symfony\Component\Validator\Constraints\Length;
 /**
  * @ORM\Entity(repositoryClass=PlatformRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get",
+        "post" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ],
+    ],
+    itemOperations: [
+        "get",
+        "put" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ],
+        "delete" => ["security" => "is_granted('ROLE_ADMIN')",
+        "security_message" => "Réservé aux ADMINs !"
+        ]
+    ]
+)]
 class Platform
 {
     /**

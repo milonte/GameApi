@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\GetUserGamesAction;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,7 +37,13 @@ use Symfony\Component\Validator\Constraints\Length;
             ]
         ],
         "put",
-        "delete"
+        "delete",
+        'get_games' => [
+            'method' => 'GET',
+            'path' => '/users/{id}/games',
+            "requirements" => ["id" => "\d+"],
+            'controller' => GetUserGamesAction::class,
+        ],
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -66,6 +75,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[Length(min: 6, minMessage: "Le mot de passe doit contenir au moins 6 caractères !")]
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GamesCollection::class, mappedBy="user")
+     */
+    private $gamesCollections;
+
+    public function __construct()
+    {
+        $this->gamesCollections = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -154,5 +173,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|GamesCollection[]
+     */
+    public function getGamesCollections(): Collection
+    {
+        return $this->gamesCollections;
+    }
+
+    public function addGamesCollection(GamesCollection $gamesCollection): self
+    {
+        if (!$this->gamesCollections->contains($gamesCollection)) {
+            $this->gamesCollections[] = $gamesCollection;
+            $gamesCollection->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGamesCollection(GamesCollection $gamesCollection): self
+    {
+        if ($this->gamesCollections->removeElement($gamesCollection)) {
+            // set the owning side to null (unless already changed)
+            if ($gamesCollection->getUser() === $this) {
+                $gamesCollection->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

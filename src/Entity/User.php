@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\GetUserGamesAction;
+use App\Controller\PostUserGamesAction;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -43,7 +44,7 @@ use Symfony\Component\Validator\Constraints\Length;
             'path' => '/users/{id}/games',
             "requirements" => ["id" => "\d+"],
             'controller' => GetUserGamesAction::class,
-        ],
+        ]
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -53,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(["read:User:collection", "read:User:item"])]
+    #[Groups(["read:User:collection", "read:User:item", "post:GamesCollection:collection"])]
     private $id;
 
     /**

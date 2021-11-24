@@ -30,15 +30,6 @@ class GetUserGamesAction extends AbstractController
 
     public function __invoke(User $data)
     {
-        /* $collections = $this->entityManager->getRepository(GamesCollection::class)
-        ->findByUser($data);
-
-        $games = [];
-        
-        foreach($collections as $collection) {
-            $games[] = $collection->getGame();
-        } */
-
         $games = $this->entityManager->getRepository(GamesCollection::class)
         ->findUserGames($data);
 

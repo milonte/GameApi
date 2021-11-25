@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\Valid;
  */
 #[ApiResource(
     attributes: [
-        "pagination_items_per_page" => 10
+        "pagination_items_per_page" => 10,
     ],
     collectionOperations: [
         "get" => [
@@ -29,6 +29,8 @@ use Symfony\Component\Validator\Constraints\Valid;
             ]
         ],
         "post" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
             "denormalization_context" => [
                 "groups" => ["write:Game:collection"]
             ]
@@ -41,11 +43,16 @@ use Symfony\Component\Validator\Constraints\Valid;
             ]
         ],
         "put" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
             "denormalization_context" => [
                 "groups" => ["put:Game:collection"]
             ]
         ],
-        "delete"
+        "delete" =>  [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ]
     ]
 )]
 #[ApiFilter(OrderFilter::class, properties: ['title' => 'DESC'])]
@@ -97,6 +104,13 @@ class Game
      */
     #[Groups("read:Game:collection")]
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Developer::class, inversedBy="games")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $developer;
 
     public function getId(): ?int
     {
@@ -152,6 +166,18 @@ class Game
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getDeveloper(): ?Developer
+    {
+        return $this->developer;
+    }
+
+    public function setDeveloper(?Developer $developer): self
+    {
+        $this->developer = $developer;
 
         return $this;
     }

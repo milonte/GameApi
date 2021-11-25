@@ -108,7 +108,7 @@ class Game
     private $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Developers::class, inversedBy="games")
+     * @ORM\ManyToMany(targetEntity=Developer::class, inversedBy="games")
      * @ORM\JoinColumn(nullable=false)
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
@@ -127,7 +127,7 @@ class Game
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Publishers::class, inversedBy="games")
+     * @ORM\ManyToMany(targetEntity=Publisher::class, inversedBy="games")
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $publishers;

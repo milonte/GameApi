@@ -30,7 +30,7 @@ use Doctrine\ORM\Mapping as ORM;
         ]
     ]
 )]
-class Developers
+class Developer
 {
     /**
      * @ORM\Id

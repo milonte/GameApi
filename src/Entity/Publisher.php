@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=PublishersRepository::class)
  */
 #[ApiResource]
-class Publishers
+class Publisher
 {
     /**
      * @ORM\Id

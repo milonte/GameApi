@@ -112,6 +112,18 @@ class Game
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $developer;
 
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $releaseDate;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $description;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -178,6 +190,30 @@ class Game
     public function setDeveloper(?Developer $developer): self
     {
         $this->developer = $developer;
+
+        return $this;
+    }
+
+    public function getReleaseDate(): ?\DateTimeInterface
+    {
+        return $this->releaseDate;
+    }
+
+    public function setReleaseDate(?\DateTimeInterface $releaseDate): self
+    {
+        $this->releaseDate = $releaseDate;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

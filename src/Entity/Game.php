@@ -64,7 +64,9 @@ class Game
     {
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
+        $this->developers = new ArrayCollection();
         $this->platforms = new ArrayCollection();
+        $this->publishers = new ArrayCollection();
     }
 
     /**
@@ -106,11 +108,11 @@ class Game
     private $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Developer::class, inversedBy="games")
+     * @ORM\ManyToMany(targetEntity=Developers::class, inversedBy="games")
      * @ORM\JoinColumn(nullable=false)
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
-    private $developer;
+    private $developers;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -123,6 +125,12 @@ class Game
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $description;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Publishers::class, inversedBy="games")
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $publishers;
 
     public function getId(): ?int
     {
@@ -182,14 +190,26 @@ class Game
         return $this;
     }
 
-    public function getDeveloper(): ?Developer
+    /**
+     * @return Collection|Developers[]
+     */
+    public function getDevelopers(): Collection
     {
-        return $this->developer;
+        return $this->developers;
     }
 
-    public function setDeveloper(?Developer $developer): self
+    public function addDeveloper(Developers $developers): self
     {
-        $this->developer = $developer;
+        if (!$this->developers->contains($developers)) {
+            $this->developers[] = $developers;
+        }
+
+        return $this;
+    }
+
+    public function removeDeveloper(Developers $developers): self
+    {
+        $this->developers->removeElement($developers);
 
         return $this;
     }
@@ -214,6 +234,30 @@ class Game
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Publishers[]
+     */
+    public function getPublishers(): Collection
+    {
+        return $this->publishers;
+    }
+
+    public function addPublisher(Publishers $publisher): self
+    {
+        if (!$this->publishers->contains($publisher)) {
+            $this->publishers[] = $publisher;
+        }
+
+        return $this;
+    }
+
+    public function removePublisher(Publishers $publisher): self
+    {
+        $this->publishers->removeElement($publisher);
 
         return $this;
     }

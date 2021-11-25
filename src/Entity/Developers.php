@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\DeveloperRepository;
+use App\Repository\DevelopersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=DeveloperRepository::class)
+ * @ORM\Entity(repositoryClass=DevelopersRepository::class)
  */
 #[ApiResource(
     collectionOperations: [
@@ -30,7 +30,7 @@ use Doctrine\ORM\Mapping as ORM;
         ]
     ]
 )]
-class Developer
+class Developers
 {
     /**
      * @ORM\Id
@@ -45,7 +45,7 @@ class Developer
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="developer")
+     * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="developers")
      */
     private $games;
 
@@ -83,7 +83,7 @@ class Developer
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
-            $game->setDeveloper($this);
+            $game->addDeveloper($this);
         }
 
         return $this;
@@ -92,10 +92,7 @@ class Developer
     public function removeGame(Game $game): self
     {
         if ($this->games->removeElement($game)) {
-            // set the owning side to null (unless already changed)
-            if ($game->getDeveloper() === $this) {
-                $game->setDeveloper(null);
-            }
+            $game->removeDeveloper($this);
         }
 
         return $this;

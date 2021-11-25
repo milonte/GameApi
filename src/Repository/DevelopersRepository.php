@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Developer;
+use App\Entity\Developers;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Developer|null find($id, $lockMode = null, $lockVersion = null)
- * @method Developer|null findOneBy(array $criteria, array $orderBy = null)
- * @method Developer[]    findAll()
- * @method Developer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Developers|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Developers|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Developers[]    findAll()
+ * @method Developers[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DeveloperRepository extends ServiceEntityRepository
+class DevelopersRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Developer::class);
+        parent::__construct($registry, Developers::class);
     }
 
     // /**
-    //  * @return Developer[] Returns an array of Developer objects
+    //  * @return Developers[] Returns an array of Developers objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class DeveloperRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Developer
+    public function findOneBySomeField($value): ?Developers
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.exampleField = :val')

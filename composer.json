@@ -77,6 +77,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "squizlabs/php_codesniffer": "^3.6",
         "symfony/maker-bundle": "^1.35",
         "symfony/stopwatch": "5.3.*",
         "symfony/web-profiler-bundle": "5.3.*"

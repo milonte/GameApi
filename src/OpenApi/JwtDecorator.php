@@ -1,5 +1,4 @@
 <?php
-// api/src/OpenApi/JwtDecorator.php
 
 declare(strict_types=1);
 
@@ -13,7 +12,8 @@ final class JwtDecorator implements OpenApiFactoryInterface
 {
     public function __construct(
         private OpenApiFactoryInterface $decorated
-    ) {}
+    ) {
+    }
 
     public function __invoke(array $context = []): OpenApi
     {
@@ -29,6 +29,7 @@ final class JwtDecorator implements OpenApiFactoryInterface
                 ],
             ],
         ]);
+
         $schemas['Credentials'] = new \ArrayObject([
             'type' => 'object',
             'properties' => [

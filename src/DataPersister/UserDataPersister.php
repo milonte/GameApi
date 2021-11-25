@@ -12,8 +12,7 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
     public function __construct(
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
-    )
-    {
+    ) {
         $this->passwordHasher = $passwordHasher;
         $this->entityManager = $entityManager;
     }
@@ -24,7 +23,7 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
     }
 
     public function persist($data, array $context = [])
-    {  
+    {
         $hashedPassword = $this->passwordHasher->hashPassword(
             $data,
             $data->getPassword()

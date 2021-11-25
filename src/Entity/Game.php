@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\GameRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,8 +35,16 @@ use Symfony\Component\Validator\Constraints\Valid;
         ],
     ],
     itemOperations: [
-        "get",
-        "put",
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:Game:collection"]
+            ]
+        ],
+        "put" => [
+            "denormalization_context" => [
+                "groups" => ["put:Game:collection"]
+            ]
+        ],
         "delete"
     ]
 )]
@@ -43,6 +52,14 @@ use Symfony\Component\Validator\Constraints\Valid;
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 class Game
 {
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        $this->platforms = new ArrayCollection();
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -55,7 +72,7 @@ class Game
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(["read:Game:collection", "write:Game:collection"]),
+        Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"]),
         Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
     ]
     private $title;
@@ -64,15 +81,22 @@ class Game
      * @ORM\ManyToMany(targetEntity=Platform::class, inversedBy="games", cascade={"persist"})
      */
     #[
-        Groups(["read:Game:collection", "write:Game:collection"]),
+        Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"]),
         Valid()
     ]
     private $platforms;
 
-    public function __construct()
-    {
-        $this->platforms = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    #[Groups("read:Game:collection")]
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    #[Groups("read:Game:collection")]
+    private $updatedAt;
 
     public function getId(): ?int
     {
@@ -111,6 +135,23 @@ class Game
     public function removePlatform(Platform $platform): self
     {
         $this->platforms->removeElement($platform);
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

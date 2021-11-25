@@ -31,9 +31,8 @@ class GetUserGamesAction extends AbstractController
     public function __invoke(User $data)
     {
         $games = $this->entityManager->getRepository(GamesCollection::class)
-        ->findUserGames($data);
+            ->findUserGames($data);
 
         return $games;
     }
-    
 }

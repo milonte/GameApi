@@ -48,7 +48,6 @@ class UserFixtures extends Fixture
             $manager->persist($user);
             $manager->flush();
             $i++;
-        } while ($i<10);
-
+        } while ($i < 10);
     }
 }

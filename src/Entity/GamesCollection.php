@@ -25,10 +25,10 @@ use Doctrine\ORM\Mapping as ORM;
                             'schema'  => [
                                 'type'       => 'object',
                                 'properties' =>
-                                    [
-                                        'user'        => ['type' => 'string'],
-                                        'game_id' => ['type' => 'id'],
-                                    ],
+                                [
+                                    'user'        => ['type' => 'string'],
+                                    'game_id' => ['type' => 'id'],
+                                ],
                             ],
                             'example' => [
                                 'user'        => 'user@email.com',

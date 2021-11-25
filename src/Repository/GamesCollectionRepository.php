@@ -19,13 +19,8 @@ class GamesCollectionRepository extends ServiceEntityRepository
         parent::__construct($registry, GamesCollection::class);
     }
 
-    public function findUserGames($value) {
-
-        /* SELECT DISTINCT game.id, game.title
-        FROM gameapi.games_collection AS collection
-        JOIN gameapi.game as game
-        WHERE collection.user_id = 5 AND collection.game_id = game.id
-        ; */
+    public function findUserGames($value)
+    {
 
         $entityManager = $this->getEntityManager();
 
@@ -38,6 +33,5 @@ class GamesCollectionRepository extends ServiceEntityRepository
 
         // returns an array of Games objects
         return $query->getResult();
-        
     }
 }

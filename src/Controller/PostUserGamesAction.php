@@ -37,37 +37,37 @@ class PostUserGamesAction extends AbstractController
         $gameId = json_decode($request->getContent())->game_id;
 
         $game = $this->entityManager->getRepository(Game::class)
-        ->findOneById($gameId);
+            ->findOneById($gameId);
 
         $user = $this->entityManager->getRepository(User::class)
-        ->findOneByEmail($userEmail);
-        
-        if(null === $game) {
+            ->findOneByEmail($userEmail);
+
+        if (null === $game) {
             throw new JsonException('Game does not exist !');
         }
 
-        if(null === $user) {
+        if (null === $user) {
             throw new JsonException('User does not exist !');
         }
 
-        if($user !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+        if ($user !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             throw new JsonException('Vous ne pouvez pas modifier ce contenu !');
         }
 
         $gamesCollection = new GamesCollection();
         $gamesCollection->setGame($game);
         $gamesCollection->setUser($user);
-        
+
         $this->entityManager->persist($gamesCollection);
         $this->entityManager->flush();
 
-        return new JsonResponse([
-            "message" => "Jeu ajouté à l'utilisateur !",
-            "user" => $user->getEmail(),
-            "game" => $game->getTitle()],
-        200);
-
-
+        return new JsonResponse(
+            [
+                "message" => "Jeu ajouté à l'utilisateur !",
+                "user" => $user->getEmail(),
+                "game" => $game->getTitle()
+            ],
+            200
+        );
     }
-    
 }

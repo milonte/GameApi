@@ -67,6 +67,7 @@ class Game
         $this->developers = new ArrayCollection();
         $this->platforms = new ArrayCollection();
         $this->publishers = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     /**
@@ -131,6 +132,11 @@ class Game
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $publishers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="games")
+     */
+    private $tags;
 
     public function getId(): ?int
     {
@@ -258,6 +264,30 @@ class Game
     public function removePublisher(Publishers $publisher): self
     {
         $this->publishers->removeElement($publisher);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

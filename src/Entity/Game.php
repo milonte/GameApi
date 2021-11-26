@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
@@ -138,6 +139,13 @@ class Game
      */
     private $tags;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     */
+    #[ApiProperty(iri: 'http://schema.org/image')]
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $cover;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -197,25 +205,25 @@ class Game
     }
 
     /**
-     * @return Collection|Developers[]
+     * @return Collection|Developer[]
      */
     public function getDevelopers(): Collection
     {
         return $this->developers;
     }
 
-    public function addDeveloper(Developers $developers): self
+    public function addDeveloper(Developer $developer): self
     {
-        if (!$this->developers->contains($developers)) {
-            $this->developers[] = $developers;
+        if (!$this->developers->contains($developer)) {
+            $this->developers[] = $developer;
         }
 
         return $this;
     }
 
-    public function removeDeveloper(Developers $developers): self
+    public function removeDeveloper(Developer $developer): self
     {
-        $this->developers->removeElement($developers);
+        $this->developers->removeElement($developer);
 
         return $this;
     }
@@ -245,14 +253,14 @@ class Game
     }
 
     /**
-     * @return Collection|Publishers[]
+     * @return Collection|Publisher[]
      */
     public function getPublishers(): Collection
     {
         return $this->publishers;
     }
 
-    public function addPublisher(Publishers $publisher): self
+    public function addPublisher(Publisher $publisher): self
     {
         if (!$this->publishers->contains($publisher)) {
             $this->publishers[] = $publisher;
@@ -261,7 +269,7 @@ class Game
         return $this;
     }
 
-    public function removePublisher(Publishers $publisher): self
+    public function removePublisher(Publisher $publisher): self
     {
         $this->publishers->removeElement($publisher);
 
@@ -288,6 +296,18 @@ class Game
     public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getCover(): ?MediaObject
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?MediaObject $cover): self
+    {
+        $this->cover = $cover;
 
         return $this;
     }

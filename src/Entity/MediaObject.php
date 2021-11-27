@@ -7,6 +7,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\CreateMediaObjectAction;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -49,14 +51,16 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 ],
             ],
         ],
-    ]
-)]
-class MediaObject
-{
-
+        ]
+        )]
+        class MediaObject
+        {
+            
+            
     public function __construct()
     {
         $this->updatedAt = new DateTimeImmutable();
+        $this->games = new ArrayCollection();
     }
 
     /**
@@ -100,6 +104,11 @@ class MediaObject
     #[Groups(['media_object:read', 'read:Game:collection'])]
     private $updatedAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="cover")
+     */
+    private $games;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,5 +136,13 @@ class MediaObject
         $this->updatedAt = new DateTimeImmutable();
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Game[]
+     */
+    public function getGames(): Collection
+    {
+        return $this->games;
     }
 }

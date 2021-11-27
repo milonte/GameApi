@@ -31,6 +31,11 @@ final class GameDataPersister implements ContextAwareDataPersisterInterface
 
     public function remove($data, array $context = [])
     {
-        // call your persistence layer to delete $data
+        // If cover will be orphan, remove it
+        if ($data->getCover() && 1 === count($data->getCover()->getGames())) {
+            $this->entityManager->remove($data->getCover());
+        }
+        $this->entityManager->remove($data);
+        $this->entityManager->flush();
     }
 }

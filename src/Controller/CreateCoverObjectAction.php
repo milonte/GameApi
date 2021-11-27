@@ -41,7 +41,7 @@ final class CreateCoverObjectAction extends AbstractController
         $coverObject->file = $uploadedFile;
 
         $coverObject->setSlug($slug);
-        
+
         // need this to call Doctrine if the file is updated
         $coverObject->setUpdatedAt();
 

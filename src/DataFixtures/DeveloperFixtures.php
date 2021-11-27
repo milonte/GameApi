@@ -21,7 +21,5 @@ class DeveloperFixtures extends Fixture
         $manager->flush();
 
         $this->addReference(self::DEVELOPER_REFERENCE, $developer);
-
     }
-
 }

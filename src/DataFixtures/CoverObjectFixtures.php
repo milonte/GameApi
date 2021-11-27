@@ -19,15 +19,13 @@ class CoverObjectFixtures extends Fixture
             $src,
             'default_cover.jpeg',
             'image/jpeg',
-            filesize($src),
-            false,
-            true //  Set test mode true !!! " Local files are used in test mode hence the code should not enforce HTTP uploads."
+            filesize($src)
         );
-        
+
         $cover = new CoverObject();
-        
+
         $cover->file = $file;
-        
+
         $cover->setSlug('cover_tomb_raider');
         $cover->filePath = "cover_tomb_raider.jpeg";
 

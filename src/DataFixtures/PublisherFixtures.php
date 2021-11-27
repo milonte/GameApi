@@ -21,6 +21,5 @@ class PublisherFixtures extends Fixture
         $manager->flush();
 
         $this->addReference(self::PUBLISHER_REFERENCE, $publisher);
-
     }
 }

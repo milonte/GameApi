@@ -21,7 +21,7 @@ final class Version20211126102456 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE game ADD cover_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE game ADD CONSTRAINT FK_232B318C922726E9 FOREIGN KEY (cover_id) REFERENCES media_object (id)');
+        $this->addSql('ALTER TABLE game ADD CONSTRAINT FK_232B318C922726E9 FOREIGN KEY (cover_id) REFERENCES cover_object (id)');
         $this->addSql('CREATE INDEX IDX_232B318C922726E9 ON game (cover_id)');
     }
 

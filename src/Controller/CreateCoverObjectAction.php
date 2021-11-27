@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\MediaObject;
+use App\Entity\CoverObject;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,9 +10,9 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 #[AsController]
-final class CreateMediaObjectAction extends AbstractController
+final class CreateCoverObjectAction extends AbstractController
 {
-    public function __invoke(EntityManagerInterface $manager, Request $request): MediaObject
+    public function __invoke(EntityManagerInterface $manager, Request $request): CoverObject
     {
         // Throw Exception if no file uploaded, or forgot the 'file' key
         $uploadedFile = $request->files->get('file');
@@ -29,22 +29,22 @@ final class CreateMediaObjectAction extends AbstractController
 
         /* check if image with this slug already exists
         and update it, or create new one */
-        $fileAlreadyExist = $manager->getRepository(MediaObject::class)
+        $fileAlreadyExist = $manager->getRepository(CoverObject::class)
             ->findOneBySlug($slug);
 
         if (null === $fileAlreadyExist) {
-            $mediaObject = new MediaObject();
+            $coverObject = new CoverObject();
         } else {
-            $mediaObject = $fileAlreadyExist;
+            $coverObject = $fileAlreadyExist;
         }
 
-        $mediaObject->file = $uploadedFile;
+        $coverObject->file = $uploadedFile;
 
-        $mediaObject->setSlug($slug);
+        $coverObject->setSlug($slug);
 
         // need this to call Doctrine if the file is updated
-        $mediaObject->setUpdatedAt();
+        $coverObject->setUpdatedAt();
 
-        return $mediaObject;
+        return $coverObject;
     }
 }

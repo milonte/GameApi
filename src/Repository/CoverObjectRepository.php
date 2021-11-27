@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\MediaObject;
+use App\Entity\CoverObject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method MediaObject|null find($id, $lockMode = null, $lockVersion = null)
- * @method MediaObject|null findOneBy(array $criteria, array $orderBy = null)
- * @method MediaObject[]    findAll()
- * @method MediaObject[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CoverObject|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CoverObject|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CoverObject[]    findAll()
+ * @method CoverObject[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MediaObjectRepository extends ServiceEntityRepository
+class CoverObjectRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MediaObject::class);
+        parent::__construct($registry, CoverObject::class);
     }
 
     // /**
-    //  * @return MediaObject[] Returns an array of MediaObject objects
+    //  * @return CoverObject[] Returns an array of CoverObject objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class MediaObjectRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?MediaObject
+    public function findOneBySomeField($value): ?CoverObject
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.exampleField = :val')

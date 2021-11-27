@@ -140,7 +140,7 @@ class Game
     private $tags;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     * @ORM\ManyToOne(targetEntity=CoverObject::class)
      */
     #[ApiProperty(iri: 'http://schema.org/image')]
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
@@ -300,12 +300,12 @@ class Game
         return $this;
     }
 
-    public function getCover(): ?MediaObject
+    public function getCover(): ?CoverObject
     {
         return $this->cover;
     }
 
-    public function setCover(?MediaObject $cover): self
+    public function setCover(?CoverObject $cover): self
     {
         $this->cover = $cover;
 

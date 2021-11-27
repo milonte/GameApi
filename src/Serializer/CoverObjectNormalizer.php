@@ -2,17 +2,17 @@
 
 namespace App\Serializer;
 
-use App\Entity\MediaObject;
+use App\Entity\CoverObject;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
-final class MediaObjectNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
+final class CoverObjectNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
-    private const ALREADY_CALLED = 'MEDIA_OBJECT_NORMALIZER_ALREADY_CALLED';
+    private const ALREADY_CALLED = 'COVER_OBJECT_NORMALIZER_ALREADY_CALLED';
 
     public function __construct(private StorageInterface $storage)
     {
@@ -37,6 +37,6 @@ final class MediaObjectNormalizer implements ContextAwareNormalizerInterface, No
             return false;
         }
 
-        return $data instanceof MediaObject;
+        return $data instanceof CoverObject;
     }
 }

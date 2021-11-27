@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\CreateMediaObjectAction;
+use App\Controller\CreateCoverObjectAction;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,8 +20,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @Vich\Uploadable
  */
 #[ApiResource(
-    iri: 'http://schema.org/MediaObject',
-    normalizationContext: ['groups' => ['media_object:read']],
+    iri: 'http://schema.org/CoverObject',
+    normalizationContext: ['groups' => ['cover_object:read']],
     itemOperations: [
         'get'
     ],
@@ -30,9 +30,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'post' => [
             "security" => "is_granted('ROLE_ADMIN')",
             "security_message" => "Réservé aux ADMINs !",
-            'controller' => CreateMediaObjectAction::class,
+            'controller' => CreateCoverObjectAction::class,
             'deserialize' => false,
-            'validation_groups' => ['Default', 'media_object_create'],
+            'validation_groups' => ['Default', 'cover_object_create'],
             'openapi_context' => [
                 'requestBody' => [
                     'content' => [
@@ -53,7 +53,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ],
         ]
         )]
-        class MediaObject
+        class CoverObject
         {
             
             
@@ -71,20 +71,20 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     private ?int $id = null;
 
     #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['media_object:read', 'read:Game:collection'])]
+    #[Groups(['cover_object:read', 'read:Game:collection'])]
     public ?string $contentUrl = null;
 
     /**
-     * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
+     * @Vich\UploadableField(mapping="cover_object", fileNameProperty="filePath")
      */
     #[Assert\File(
         maxSize: "2048k",
         maxSizeMessage: "Fichier trop lourd ( > 2M )",
         mimeTypes: ['image/*'],
         mimeTypesMessage: "Seulement .jpg ou .png autorisés !",
-        groups: ['media_object_create']
+        groups: ['cover_object_create']
     )]
-    #[Assert\NotNull(groups: ['media_object_create'])]
+    #[Assert\NotNull(groups: ['cover_object_create'])]
     public ?File $file = null;
 
     /**
@@ -95,13 +95,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     /**
      * @ORM\Column(nullable=false)
      */
-    #[Groups(['media_object:read', 'read:Game:collection', 'media_object_create'])]
+    #[Groups(['cover_object:read', 'read:Game:collection', 'cover_object_create'])]
     public ?string $slug = null;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      */
-    #[Groups(['media_object:read', 'read:Game:collection'])]
+    #[Groups(['cover_object:read', 'read:Game:collection'])]
     private $updatedAt;
 
     /**

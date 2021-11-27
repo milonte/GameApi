@@ -20,12 +20,12 @@ final class Version20211126112224 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE media_object ADD slug VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE cover_object ADD slug VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE media_object DROP slug');
+        $this->addSql('ALTER TABLE cover_object DROP slug');
     }
 }

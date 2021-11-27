@@ -19,3 +19,4 @@
 ###< squizlabs/php_codesniffer ###
 
 /public/media/cover/*
+!/public/media/cover/default_cover.jpeg

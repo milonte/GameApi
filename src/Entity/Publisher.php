@@ -3,57 +3,31 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\PlatformRepository;
+use App\Repository\PublisherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints\Length;
 
 /**
- * @ORM\Entity(repositoryClass=PlatformRepository::class)
+ * @ORM\Entity(repositoryClass=PublisherRepository::class)
  */
-#[ApiResource(
-    collectionOperations: [
-        "get",
-        "post" => [
-            "security" => "is_granted('ROLE_ADMIN')",
-            "security_message" => "Réservé aux ADMINs !"
-        ],
-    ],
-    itemOperations: [
-        "get",
-        "put" => [
-            "security" => "is_granted('ROLE_ADMIN')",
-            "security_message" => "Réservé aux ADMINs !"
-        ],
-        "delete" => [
-            "security" => "is_granted('ROLE_ADMIN')",
-            "security_message" => "Réservé aux ADMINs !"
-        ]
-    ]
-)]
-class Platform
+#[ApiResource]
+class Publisher
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups("read:Game:collection")]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[
-        Groups(["read:Game:collection", "write:Game:collection"]),
-        Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
-    ]
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="platforms")
+     * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="publishers")
      */
     private $games;
 
@@ -91,7 +65,7 @@ class Platform
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
-            $game->addPlatform($this);
+            $game->addPublisher($this);
         }
 
         return $this;
@@ -100,7 +74,7 @@ class Platform
     public function removeGame(Game $game): self
     {
         if ($this->games->removeElement($game)) {
-            $game->removePlatform($this);
+            $game->removePublisher($this);
         }
 
         return $this;

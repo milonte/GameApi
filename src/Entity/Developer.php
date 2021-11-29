@@ -3,15 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\PlatformRepository;
+use App\Repository\DeveloperRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints\Length;
 
 /**
- * @ORM\Entity(repositoryClass=PlatformRepository::class)
+ * @ORM\Entity(repositoryClass=DeveloperRepository::class)
  */
 #[ApiResource(
     collectionOperations: [
@@ -33,27 +31,22 @@ use Symfony\Component\Validator\Constraints\Length;
         ]
     ]
 )]
-class Platform
+class Developer
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups("read:Game:collection")]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[
-        Groups(["read:Game:collection", "write:Game:collection"]),
-        Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
-    ]
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="platforms")
+     * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="developers")
      */
     private $games;
 
@@ -91,7 +84,7 @@ class Platform
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
-            $game->addPlatform($this);
+            $game->addDeveloper($this);
         }
 
         return $this;
@@ -100,7 +93,7 @@ class Platform
     public function removeGame(Game $game): self
     {
         if ($this->games->removeElement($game)) {
-            $game->removePlatform($this);
+            $game->removeDeveloper($this);
         }
 
         return $this;

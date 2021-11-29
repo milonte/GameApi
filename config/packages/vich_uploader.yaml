@@ -1,0 +1,11 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        cover_object:
+            uri_prefix: /media/cover
+            upload_destination: '%kernel.project_dir%/public/media/cover'
+            # Will rename uploaded files using a uniqueid as a prefix.
+            namer: 
+                service: Vich\UploaderBundle\Naming\PropertyNamer
+                options: { property: 'slug' }

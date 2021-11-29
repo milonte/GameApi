@@ -27,8 +27,9 @@ use Symfony\Component\Validator\Constraints\Length;
             "security" => "is_granted('ROLE_ADMIN')",
             "security_message" => "Réservé aux ADMINs !"
         ],
-        "delete" => ["security" => "is_granted('ROLE_ADMIN')",
-        "security_message" => "Réservé aux ADMINs !"
+        "delete" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
         ]
     ]
 )]

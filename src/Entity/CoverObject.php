@@ -51,7 +51,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 ],
             ],
         ],
-        ]
+    ]
 )]
 class CoverObject
 {
@@ -87,26 +87,26 @@ class CoverObject
     #[Assert\NotNull(groups: ['cover_object_create'])]
     public ?File $file = null;
 
-/**
-* @ORM\Column(nullable=true)
-*/
+    /**
+     * @ORM\Column(nullable=true)
+     */
     public ?string $filePath = null;
 
-/**
-* @ORM\Column(nullable=false)
-*/
+    /**
+     * @ORM\Column(nullable=false)
+     */
     #[Groups(['cover_object:read', 'read:Game:collection', 'cover_object_create'])]
     public ?string $slug = null;
 
-/**
-* @ORM\Column(type="datetime_immutable")
-*/
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
     #[Groups(['cover_object:read', 'read:Game:collection'])]
     private $updatedAt;
 
-/**
-* @ORM\OneToMany(targetEntity=Game::class, mappedBy="cover")
-*/
+    /**
+     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="cover")
+     */
     private $games;
 
     public function getId(): ?int
@@ -138,9 +138,9 @@ class CoverObject
         return $this;
     }
 
-/**
-* @return Collection|Game[]
-*/
+    /**
+     * @return Collection|Game[]
+     */
     public function getGames(): Collection
     {
         return $this->games;

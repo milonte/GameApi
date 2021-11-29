@@ -6,7 +6,7 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 
 class AuthenticationTest extends ApiTestCase
 {
-    
+
     public function testLogin(): void
     {
 

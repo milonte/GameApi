@@ -25,8 +25,9 @@ use Doctrine\ORM\Mapping as ORM;
             "security" => "is_granted('ROLE_ADMIN')",
             "security_message" => "Réservé aux ADMINs !"
         ],
-        "delete" => ["security" => "is_granted('ROLE_ADMIN')",
-        "security_message" => "Réservé aux ADMINs !"
+        "delete" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
         ]
     ]
 )]

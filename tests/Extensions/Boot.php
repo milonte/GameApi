@@ -23,7 +23,7 @@ class Boot implements BeforeFirstTestHook, AfterLastTestHook
 
         $databaseTool->loadAllFixtures();
 
-        echo sprintf("Fixtures loaded ! \n\r");        
+        echo sprintf("Fixtures loaded ! \n\r");
     }
 
     public function executeAfterLastTest(): void

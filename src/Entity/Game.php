@@ -69,6 +69,7 @@ class Game
         $this->platforms = new ArrayCollection();
         $this->publishers = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->gamesCollections = new ArrayCollection();
     }
 
     /**
@@ -145,6 +146,11 @@ class Game
     #[ApiProperty(iri: 'http://schema.org/image')]
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $cover;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GamesCollection::class, mappedBy="game")
+     */
+    private $gamesCollections;
 
     public function getId(): ?int
     {
@@ -308,6 +314,30 @@ class Game
     public function setCover(?CoverObject $cover): self
     {
         $this->cover = $cover;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GamesCollection[]
+     */
+    public function getGamesCollections(): Collection
+    {
+        return $this->gamesCollections;
+    }
+
+    public function addGamesCollection(GamesCollection $gamesCollection): self
+    {
+        if (!$this->gamesCollections->contains($gamesCollection)) {
+            $this->gamesCollections[] = $gamesCollection;
+        }
+
+        return $this;
+    }
+
+    public function removeGamesCollection(GamesCollection $gamesCollection): self
+    {
+        $this->platforms->removeElement($gamesCollection);
 
         return $this;
     }

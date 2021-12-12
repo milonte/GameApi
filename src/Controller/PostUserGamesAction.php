@@ -64,8 +64,7 @@ class PostUserGamesAction extends AbstractController
         return new JsonResponse(
             [
                 "message" => "Jeu ajouté à l'utilisateur !",
-                "user" => $user->getEmail(),
-                "game" => $game->getTitle()
+                "user" => $user->getEmail()
             ],
             200
         );

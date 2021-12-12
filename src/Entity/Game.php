@@ -20,9 +20,6 @@ use Symfony\Component\Validator\Constraints\Valid;
  * @ORM\Entity(repositoryClass=GameRepository::class)
  */
 #[ApiResource(
-    attributes: [
-        "pagination_items_per_page" => 10,
-    ],
     collectionOperations: [
         "get" => [
             "normalization_context" => [
@@ -56,8 +53,8 @@ use Symfony\Component\Validator\Constraints\Valid;
         ]
     ]
 )]
-#[ApiFilter(OrderFilter::class, properties: ['title' => 'DESC'])]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['releaseDate' => 'DESC'])]
+#[ApiFilter(SearchFilter::class, properties: ['release' => 'partial'])]
 class Game
 {
 
@@ -66,7 +63,6 @@ class Game
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
         $this->developers = new ArrayCollection();
-        $this->platforms = new ArrayCollection();
         $this->publishers = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->gamesCollections = new ArrayCollection();
@@ -79,24 +75,6 @@ class Game
      */
     #[Groups("read:Game:collection")]
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    #[
-        Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"]),
-        Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
-    ]
-    private $title;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Platform::class, inversedBy="games", cascade={"persist"})
-     */
-    #[
-        Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"]),
-        Valid()
-    ]
-    private $platforms;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -124,12 +102,6 @@ class Game
     private $releaseDate;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
-    private $description;
-
-    /**
      * @ORM\ManyToMany(targetEntity=Publisher::class, inversedBy="games")
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
@@ -152,45 +124,27 @@ class Game
      */
     private $gamesCollections;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=GameData::class)
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $gameData;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Platform::class, inversedBy="games")
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $platform;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $isbn;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Platform[]
-     */
-    public function getPlatforms(): Collection
-    {
-        return $this->platforms;
-    }
-
-    public function addPlatform(Platform $platform): self
-    {
-        if (!$this->platforms->contains($platform)) {
-            $this->platforms[] = $platform;
-        }
-
-        return $this;
-    }
-
-    public function removePlatform(Platform $platform): self
-    {
-        $this->platforms->removeElement($platform);
-
-        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -242,18 +196,6 @@ class Game
     public function setReleaseDate(?\DateTimeInterface $releaseDate): self
     {
         $this->releaseDate = $releaseDate;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
@@ -337,7 +279,43 @@ class Game
 
     public function removeGamesCollection(GamesCollection $gamesCollection): self
     {
-        $this->platforms->removeElement($gamesCollection);
+        $this->gamesCollections->removeElement($gamesCollection);
+
+        return $this;
+    }
+
+    public function getGameData(): ?GameData
+    {
+        return $this->gameData;
+    }
+
+    public function setGameData(?GameData $gameData): self
+    {
+        $this->gameData = $gameData;
+
+        return $this;
+    }
+
+    public function getPlatform(): ?Platform
+    {
+        return $this->platform;
+    }
+
+    public function setPlatform(?Platform $platform): self
+    {
+        $this->platform = $platform;
+
+        return $this;
+    }
+
+    public function getIsbn(): ?string
+    {
+        return $this->isbn;
+    }
+
+    public function setIsbn(string $isbn): self
+    {
+        $this->isbn = $isbn;
 
         return $this;
     }

@@ -53,7 +53,7 @@ class Platform
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Game::class, mappedBy="platforms")
+     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="platform")
      */
     private $games;
 
@@ -91,7 +91,7 @@ class Platform
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
-            $game->addPlatform($this);
+            $game->setPlatform($this);
         }
 
         return $this;
@@ -100,7 +100,10 @@ class Platform
     public function removeGame(Game $game): self
     {
         if ($this->games->removeElement($game)) {
-            $game->removePlatform($this);
+            // set the owning side to null (unless already changed)
+            if ($game->getPlatform() === $this) {
+                $game->setPlatform(null);
+            }
         }
 
         return $this;

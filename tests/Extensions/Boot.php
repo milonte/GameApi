@@ -2,6 +2,12 @@
 
 namespace App\Tests\Extensions;
 
+use App\DataFixtures\CoverObjectFixtures;
+use App\DataFixtures\DeveloperFixtures;
+use App\DataFixtures\GameFixtures;
+use App\DataFixtures\GameInfosFixtures;
+use App\DataFixtures\PlatformFixtures;
+use App\DataFixtures\PublisherFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Kernel;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;

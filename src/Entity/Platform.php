@@ -51,7 +51,7 @@ class Platform
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(["read:Game:collection", "write:Game:collection"]),
+        Groups(["read:Game:collection", "write:Game:collection", "read:Platform:item"]),
         Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
     ]
     private $name;

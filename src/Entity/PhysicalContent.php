@@ -7,6 +7,7 @@ use App\Repository\PhysicalContentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PhysicalContentRepository::class)
@@ -24,6 +25,7 @@ class PhysicalContent
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups("read:Platform:item")]
     private $name;
 
     /**

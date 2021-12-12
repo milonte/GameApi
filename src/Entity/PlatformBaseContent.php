@@ -7,6 +7,7 @@ use App\Repository\PlatformBaseContentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PlatformBaseContentRepository::class)
@@ -19,22 +20,26 @@ class PlatformBaseContent
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups("read:Platform:item")]
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=PhysicalSupport::class, inversedBy="platformBaseContents")
      * @ORM\JoinColumn(nullable=false)
      */
+    #[Groups("read:Platform:item")]
     private $physicalSupport;
 
     /**
      * @ORM\ManyToOne(targetEntity=PhysicalContainer::class, inversedBy="platformBaseContents")
      */
+    #[Groups("read:Platform:item")]
     private $physicalContainer;
 
     /**
      * @ORM\ManyToMany(targetEntity=PhysicalContent::class, inversedBy="platformBaseContents")
      */
+    #[Groups("read:Platform:item")]
     private $physicalContent;
 
     public function __construct()

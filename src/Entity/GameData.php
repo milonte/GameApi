@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints\Length;
  */
 #[ApiResource(
     attributes: [
-        "pagination_items_per_page" => 10,
+        "pagination_items_per_page" => 10
     ],
     collectionOperations: [
         "get" => [
@@ -68,7 +68,7 @@ class GameData
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"]),
+        Groups(["read:Game:collection", "read:GameData:collection", "write:GameData:collection", "put:GameData:collection"]),
         Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
     ]
     private $title;
@@ -95,7 +95,7 @@ class GameData
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
+    #[Groups(["read:GameData:collection", "read:Game:collection", "write:GameData:collection", "put:GameData:collection"])]
     private $description;
 
     /**
@@ -107,7 +107,7 @@ class GameData
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="gameData")
      */
-    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
+    #[Groups(["read:GameData:collection", 'read:Game:collection', "write:GameData:collection", "put:GameData:collection"])]
     private $tags;
 
     /**

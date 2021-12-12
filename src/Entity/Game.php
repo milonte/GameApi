@@ -20,6 +20,9 @@ use Symfony\Component\Validator\Constraints\Valid;
  * @ORM\Entity(repositoryClass=GameRepository::class)
  */
 #[ApiResource(
+    attributes: [
+        "enable_max_depth" => true
+    ],
     collectionOperations: [
         "get" => [
             "normalization_context" => [
@@ -110,6 +113,8 @@ class Game
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="games")
      */
+    #[Groups("read:Game:collection")]
+
     private $tags;
 
     /**

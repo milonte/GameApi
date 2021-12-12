@@ -101,7 +101,7 @@ class CoverObject
     /**
      * @ORM\Column(type="datetime_immutable")
      */
-    #[Groups(['cover_object:read', 'read:Game:collection'])]
+    #[Groups('cover_object:read')]
     private $updatedAt;
 
     /**

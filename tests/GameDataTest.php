@@ -6,11 +6,9 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\Game;
 use App\Entity\GameData;
 use App\Entity\Platform;
-use DateTime;
 use Exception;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class GameTest extends ApiTestCase
+class GameDataTest extends ApiTestCase
 {
     public static $adminToken;
     public static $userToken;
@@ -39,16 +37,16 @@ class GameTest extends ApiTestCase
         $client = self::createClient();
 
         // assert response return 401 when no JWT Token provided
-        $client->request('GET', '/api/games');
+        $client->request('GET', '/api/game_datas');
         $this->assertResponseStatusCodeSame(401);
         $this->assertJsonContains(['message' => 'JWT Token not found']);
 
         // assert response for USER (and ADMIN) with token
-        $client->request('GET', '/api/games', ['auth_bearer' => self::$userToken]);
+        $client->request('GET', '/api/game_datas', ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
     }
 
-    public function testGetGame(): void
+    /* public function testGetGame(): void
     {
         $client = self::createClient();
 
@@ -163,5 +161,5 @@ class GameTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertNull($this->findIriBy(Game::class, ["isbn" => '0000000000']));
-    }
+    } */
 }

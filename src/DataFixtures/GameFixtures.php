@@ -18,7 +18,7 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
             $game = new Game();
 
             $game->setIsbn('2765410054');
-            $game->setGameInfos($this->getReference(GameInfosFixtures::GAME_INFOS_REFERENCE));
+            $game->setGameData($this->getReference(GameDataFixtures::GAME_INFOS_REFERENCE));
             $game->addDeveloper($this->getReference(DeveloperFixtures::DEVELOPER_REFERENCE));
             $game->setPlatform($this->getReference(PlatformFixtures::PLATFORM_REFERENCE));
             $game->addPublisher($this->getReference(PublisherFixtures::PUBLISHER_REFERENCE));
@@ -34,7 +34,7 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            GameInfosFixtures::class,
+            GameDataFixtures::class,
             PlatformFixtures::class,
             DeveloperFixtures::class,
             PublisherFixtures::class,

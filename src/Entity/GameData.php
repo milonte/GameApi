@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\GameInfosRepository;
+use App\Repository\GameDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,10 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
 
 /**
- * @ORM\Entity(repositoryClass=GameInfosRepository::class)
+ * @ORM\Entity(repositoryClass=GameDataRepository::class)
  */
 #[ApiResource]
-class GameInfos
+class GameData
 {
     /**
      * @ORM\Id
@@ -40,13 +40,13 @@ class GameInfos
     private $platforms;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Developer::class, inversedBy="gameInfos")
+     * @ORM\ManyToMany(targetEntity=Developer::class, inversedBy="gameData")
      */
     #[Groups("read:Game:collection")]
     private $developer;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Publisher::class, inversedBy="gameInfos")
+     * @ORM\ManyToMany(targetEntity=Publisher::class, inversedBy="gameData")
      */
     #[Groups("read:Game:collection")]
     private $publishers;
@@ -64,13 +64,13 @@ class GameInfos
     private $cover;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="gameInfos")
+     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="gameData")
      */
     #[Groups("read:Game:collection")]
     private $tags;
 
     /**
-     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="gameInfos")
+     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="gameData")
      */
     private $games;
 
@@ -232,7 +232,7 @@ class GameInfos
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
-            $game->setGameInfos($this);
+            $game->setGameData($this);
         }
 
         return $this;
@@ -242,8 +242,8 @@ class GameInfos
     {
         if ($this->games->removeElement($game)) {
             // set the owning side to null (unless already changed)
-            if ($game->getGameInfos() === $this) {
-                $game->setGameInfos(null);
+            if ($game->getGameData() === $this) {
+                $game->setGameData(null);
             }
         }
 

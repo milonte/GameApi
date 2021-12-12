@@ -27,15 +27,7 @@ class Boot implements BeforeFirstTestHook, AfterLastTestHook
 
         $databaseTool = $container->get(DatabaseToolCollection::class)->get();
 
-        $databaseTool->loadFixtures([
-            CoverObjectFixtures::class,
-            DeveloperFixtures::class,
-            GameFixtures::class,
-            GameInfosFixtures::class,
-            PlatformFixtures::class,
-            PublisherFixtures::class,
-            UserFixtures::class,
-        ]);
+        $databaseTool->loadAllFixtures();
 
         echo sprintf("Fixtures loaded ! \n\r");
     }

@@ -128,10 +128,10 @@ class Game
     private $gamesCollections;
 
     /**
-     * @ORM\ManyToOne(targetEntity=GameInfos::class)
+     * @ORM\ManyToOne(targetEntity=GameData::class)
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
-    private $gameInfos;
+    private $gameData;
 
     /**
      * @ORM\ManyToOne(targetEntity=Platform::class, inversedBy="games")
@@ -287,14 +287,14 @@ class Game
         return $this;
     }
 
-    public function getGameInfos(): ?GameInfos
+    public function getGameData(): ?GameData
     {
-        return $this->gameInfos;
+        return $this->gameData;
     }
 
-    public function setGameInfos(?GameInfos $gameInfos): self
+    public function setGameData(?GameData $gameData): self
     {
-        $this->gameInfos = $gameInfos;
+        $this->gameData = $gameData;
 
         return $this;
     }

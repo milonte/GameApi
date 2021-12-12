@@ -2,6 +2,12 @@
 
 namespace App\Tests\Extensions;
 
+use App\DataFixtures\CoverObjectFixtures;
+use App\DataFixtures\DeveloperFixtures;
+use App\DataFixtures\GameFixtures;
+use App\DataFixtures\GameInfosFixtures;
+use App\DataFixtures\PlatformFixtures;
+use App\DataFixtures\PublisherFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Kernel;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
@@ -21,7 +27,15 @@ class Boot implements BeforeFirstTestHook, AfterLastTestHook
 
         $databaseTool = $container->get(DatabaseToolCollection::class)->get();
 
-        $databaseTool->loadAllFixtures();
+        $databaseTool->loadFixtures([
+            CoverObjectFixtures::class,
+            DeveloperFixtures::class,
+            GameFixtures::class,
+            GameInfosFixtures::class,
+            PlatformFixtures::class,
+            PublisherFixtures::class,
+            UserFixtures::class,
+        ]);
 
         echo sprintf("Fixtures loaded ! \n\r");
     }

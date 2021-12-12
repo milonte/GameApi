@@ -46,7 +46,7 @@ class GameTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testGetGame(): void
+    /*   public function testGetGame(): void
     {
         $client = self::createClient();
 
@@ -157,5 +157,5 @@ class GameTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertNull($this->findIriBy(Game::class, ["title" => "Game MODIFIED by fixtures"]));
-    }
+    } */
 }

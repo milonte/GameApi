@@ -17,12 +17,11 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
         do {
             $game = new Game();
 
-            $game->setTitle('Game number ' . $i);
+            $game->setGameInfos($this->getReference(GameInfosFixtures::GAME_INFOS_REFERENCE));
             $game->addDeveloper($this->getReference(DeveloperFixtures::DEVELOPER_REFERENCE));
-            $game->addPlatform($this->getReference(PlatformFixtures::PLATFORM_REFERENCE));
+            $game->setPlatform($this->getReference(PlatformFixtures::PLATFORM_REFERENCE));
             $game->addPublisher($this->getReference(PublisherFixtures::PUBLISHER_REFERENCE));
             $game->setReleaseDate(new DateTimeImmutable());
-            $game->setDescription("description of this Game");
             $game->setCover($this->getReference(CoverObjectFixtures::COVER_OBJECT_REFERENCE));
 
             $manager->persist($game);
@@ -34,6 +33,7 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
+            GameInfosFixtures::class,
             PlatformFixtures::class,
             DeveloperFixtures::class,
             PublisherFixtures::class,

@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\GameDataRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +16,45 @@ use Symfony\Component\Validator\Constraints\Length;
 /**
  * @ORM\Entity(repositoryClass=GameDataRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    attributes: [
+        "pagination_items_per_page" => 10,
+    ],
+    collectionOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:GameData:collection"]
+            ]
+        ],
+        "post" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
+            "denormalization_context" => [
+                "groups" => ["write:GameData:collection"]
+            ]
+        ],
+    ],
+    itemOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:GameData:collection"]
+            ]
+        ],
+        "put" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
+            "denormalization_context" => [
+                "groups" => ["put:GameData:collection"]
+            ]
+        ],
+        "delete" =>  [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ]
+    ]
+)]
+#[ApiFilter(OrderFilter::class, properties: ['updatedAt' => 'DESC'])]
+#[ApiFilter(SearchFilter::class, properties: ['updatedAt' => 'partial'])]
 class GameData
 {
     /**
@@ -27,7 +68,7 @@ class GameData
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups("read:Game:collection"),
+        Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"]),
         Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
     ]
     private $title;
@@ -36,42 +77,43 @@ class GameData
     /**
      * @ORM\ManyToMany(targetEntity=Platform::class)
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
     private $platforms;
 
     /**
      * @ORM\ManyToMany(targetEntity=Developer::class, inversedBy="gameData")
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
     private $developer;
 
     /**
      * @ORM\ManyToMany(targetEntity=Publisher::class, inversedBy="gameData")
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
     private $publishers;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity=CoverObject::class)
      */
-    #[Groups("read:Game:collection")]
+    #[Groups("read:GameData:collection")]
     private $cover;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="gameData")
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:GameData:collection", "write:GameData:collection", "put:GameData:collection"])]
     private $tags;
 
     /**
      * @ORM\OneToMany(targetEntity=Game::class, mappedBy="gameData")
      */
+    #[Groups("read:GameData:collection")]
     private $games;
 
     public function __construct()

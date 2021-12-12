@@ -20,9 +20,6 @@ use Symfony\Component\Validator\Constraints\Valid;
  * @ORM\Entity(repositoryClass=GameRepository::class)
  */
 #[ApiResource(
-    attributes: [
-        "pagination_items_per_page" => 10,
-    ],
     collectionOperations: [
         "get" => [
             "normalization_context" => [
@@ -56,8 +53,8 @@ use Symfony\Component\Validator\Constraints\Valid;
         ]
     ]
 )]
-#[ApiFilter(OrderFilter::class, properties: ['updatedAt' => 'DESC'])]
-#[ApiFilter(SearchFilter::class, properties: ['updatedAt' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['releaseDate' => 'DESC'])]
+#[ApiFilter(SearchFilter::class, properties: ['release' => 'partial'])]
 class Game
 {
 

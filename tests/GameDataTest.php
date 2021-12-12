@@ -46,7 +46,7 @@ class GameDataTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    /* public function testGetGame(): void
+    public function testGetGame(): void
     {
         $client = self::createClient();
 
@@ -161,5 +161,5 @@ class GameDataTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertNull($this->findIriBy(Game::class, ["isbn" => '0000000000']));
-    } */
+    }
 }

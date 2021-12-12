@@ -17,6 +17,7 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
         do {
             $game = new Game();
 
+            $game->setIsbn('2765410054');
             $game->setGameInfos($this->getReference(GameInfosFixtures::GAME_INFOS_REFERENCE));
             $game->addDeveloper($this->getReference(DeveloperFixtures::DEVELOPER_REFERENCE));
             $game->setPlatform($this->getReference(PlatformFixtures::PLATFORM_REFERENCE));

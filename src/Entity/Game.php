@@ -130,14 +130,20 @@ class Game
     /**
      * @ORM\ManyToOne(targetEntity=GameInfos::class)
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $gameInfos;
 
     /**
      * @ORM\ManyToOne(targetEntity=Platform::class, inversedBy="games")
      */
-    #[Groups("read:Game:collection")]
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $platform;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
+    private $isbn;
 
     public function getId(): ?int
     {
@@ -301,6 +307,18 @@ class Game
     public function setPlatform(?Platform $platform): self
     {
         $this->platform = $platform;
+
+        return $this;
+    }
+
+    public function getIsbn(): ?string
+    {
+        return $this->isbn;
+    }
+
+    public function setIsbn(string $isbn): self
+    {
+        $this->isbn = $isbn;
 
         return $this;
     }

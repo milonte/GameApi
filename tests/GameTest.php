@@ -88,7 +88,7 @@ class GameTest extends ApiTestCase
             'json' => [
                 "isbn" => '0000000000',
                 "gameData" => $gameDataIri,
-                "platform" => $platformIri, // "api/platforms/1"
+                "platform" => $platformIri, // "/api/platforms/1"
                 "developers" => ["/api/developers/1"],
                 "publishers" => ["/api/publishers/1"],
                 "releaseDate" => $date,

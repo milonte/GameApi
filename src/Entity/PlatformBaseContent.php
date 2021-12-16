@@ -12,7 +12,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=PlatformBaseContentRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PlatformBaseContent:collection"]
+            ]
+        ],
+        "post" => [
+            "denormalization_context" => [
+                "groups" => ["write:PlatformBaseContent:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PlatformBaseContent:collection"]
+            ]
+        ],
+        "put" => [
+            "denormalization_context" => [
+                "groups" => ["write:PlatformBaseContent:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ],
+        "delete" =>  [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ]
+    ]
+)]
 class PlatformBaseContent
 {
     /**
@@ -27,19 +60,19 @@ class PlatformBaseContent
      * @ORM\ManyToOne(targetEntity=PhysicalSupport::class, inversedBy="platformBaseContents")
      * @ORM\JoinColumn(nullable=false)
      */
-    #[Groups("read:Platform:item")]
+    #[Groups(["read:Platform:item", "read:PlatformBaseContent:collection", "write:PlatformBaseContent:collection"])]
     private $physicalSupport;
 
     /**
      * @ORM\ManyToOne(targetEntity=PhysicalContainer::class, inversedBy="platformBaseContents")
      */
-    #[Groups("read:Platform:item")]
+    #[Groups(["read:Platform:item", "read:PlatformBaseContent:collection", "write:PlatformBaseContent:collection"])]
     private $physicalContainer;
 
     /**
      * @ORM\ManyToMany(targetEntity=PhysicalContent::class, inversedBy="platformBaseContents")
      */
-    #[Groups("read:Platform:item")]
+    #[Groups(["read:Platform:item", "read:PlatformBaseContent:collection", "write:PlatformBaseContent:collection"])]
     private $physicalContent;
 
     public function __construct()

@@ -63,7 +63,7 @@ class PhysicalContainer
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     #[Groups(["read:PhysicalContainer:collection", "write:PhysicalContainer:collection", "read:Platform:item"])]
     private $name;

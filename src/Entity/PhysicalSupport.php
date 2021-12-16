@@ -12,7 +12,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=PhysicalSupportRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PhysicalSupport:collection"]
+            ]
+        ],
+        "post" => [
+            "denormalization_context" => [
+                "groups" => ["write:PhysicalSupport:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PhysicalSupport:collection"]
+            ]
+        ],
+        "put" => [
+            "denormalization_context" => [
+                "groups" => ["write:PhysicalSupport:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ],
+        "delete" =>  [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ]
+    ]
+)]
 class PhysicalSupport
 {
     public const PHYSICAL_SUPPORTS = [
@@ -30,9 +63,9 @@ class PhysicalSupport
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    #[Groups("read:Platform:item")]
+    #[Groups(["read:PhysicalSupport:collection", "write:PhysicalSupport:collection", "read:Platform:item"])]
     private $name;
 
     /**

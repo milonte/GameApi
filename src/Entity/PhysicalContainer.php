@@ -12,7 +12,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=PhysicalContainerRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PhysicalContainer:collection"]
+            ]
+        ],
+        "post" => [
+            "denormalization_context" => [
+                "groups" => ["write:PhysicalContainer:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PhysicalContainer:collection"]
+            ]
+        ],
+        "put" => [
+            "denormalization_context" => [
+                "groups" => ["write:PhysicalContainer:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ],
+        "delete" =>  [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ]
+    ]
+)]
 class PhysicalContainer
 {
     public const PHYSICAL_CONTAINERS = [
@@ -32,7 +65,7 @@ class PhysicalContainer
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups("read:Platform:item")]
+    #[Groups(["read:PhysicalContainer:collection", "write:PhysicalContainer:collection", "read:Platform:item"])]
     private $name;
 
     /**

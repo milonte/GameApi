@@ -3,10 +3,10 @@
 namespace App\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\PhysicalContainer;
+use App\Entity\PhysicalContent;
 use Exception;
 
-class PhysicalContainerTest extends ApiTestCase
+class PhysicalContentTest extends ApiTestCase
 {
     public static $adminToken;
     public static $userToken;
@@ -35,36 +35,36 @@ class PhysicalContainerTest extends ApiTestCase
         $client = self::createClient();
 
         // assert response return 401 when no JWT Token provided
-        $client->request('GET', '/api/physical_containers');
+        $client->request('GET', '/api/physical_contents');
         $this->assertResponseStatusCodeSame(401);
         $this->assertJsonContains(['message' => 'JWT Token not found']);
 
         // assert response for USER (and ADMIN) with token
-        $client->request('GET', '/api/physical_containers', ['auth_bearer' => self::$userToken]);
+        $client->request('GET', '/api/physical_contents', ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
     }
 
-    public function testGetPhysicalContainer(): void
+    public function testGetPhysicalContent(): void
     {
         $client = self::createClient();
 
-        $physicalContainerIri = $this->findIriBy(PhysicalContainer::class, ["name" => "CardBoard"]);
+        $physicalContentIri = $this->findIriBy(PhysicalContent::class, ["name" => "Book"]);
 
         // assert response for USER (and ADMIN) with token
-        $response = $client->request('GET', $physicalContainerIri, ['auth_bearer' => self::$userToken]);
+        $response = $client->request('GET', $physicalContentIri, ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
 
-        $physicalContainer = json_decode($response->getContent());
-        $this->assertSame($physicalContainer->name, "Cardboard");
+        $physicalContent = json_decode($response->getContent());
+        $this->assertSame($physicalContent->name, "Book");
     }
 
-    public function testPostPhysicalContainer(): void
+    public function testPostPhysicalContent(): void
     {
         $client = self::createClient();
 
         // assert can't POST as USER
         try {
-            $client->request('POST', 'api/physical_containers', [
+            $client->request('POST', 'api/physical_contents', [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -74,21 +74,7 @@ class PhysicalContainerTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        // assert can't POST value already exists
-        try {
-            $client->request('POST', 'api/physical_containers', [
-                'headers' => ['Content-Type' => 'application/json'],
-                'json' => [
-                    "name" => "CardBoard"
-                ],
-                'auth_bearer' => self::$adminToken
-            ])->getContent();
-        } catch (Exception $e) {
-            $this->assertResponseStatusCodeSame(500);
-            $this->assertStringContainsString("Duplicate entry 'CardBoard'", $e->getMessage());
-        }
-
-        $response = $client->request('POST', 'api/physical_containers', [
+        $response = $client->request('POST', 'api/physical_contents', [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [
                 "name" => "Test"
@@ -98,21 +84,21 @@ class PhysicalContainerTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $physicalContainer = json_decode($response->getContent());
+        $physicalContent = json_decode($response->getContent());
 
-        $this->assertEquals("Test", $physicalContainer->name);
+        $this->assertEquals("Test", $physicalContent->name);
     }
 
-    public function testPutPhysicalContainer(): void
+    public function testPutPhysicalContent(): void
     {
 
         $client = self::createClient();
 
-        $physicalContainerIri = $this->findIriBy(PhysicalContainer::class, ["name" => "Test"]);
+        $physicalContentIri = $this->findIriBy(PhysicalContent::class, ["name" => "Test"]);
 
         // assert can't PUT as USER
         try {
-            $client->request('PUT', $physicalContainerIri, [
+            $client->request('PUT', $physicalContentIri, [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -122,7 +108,7 @@ class PhysicalContainerTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        $response = $client->request('PUT', $physicalContainerIri, [
+        $response = $client->request('PUT', $physicalContentIri, [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [
                 "name" => "Modified by Test"
@@ -132,20 +118,20 @@ class PhysicalContainerTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $physicalContainer = json_decode($response->getContent());
+        $physicalContent = json_decode($response->getContent());
 
-        $this->assertEquals("Modified by Test", $physicalContainer->name);
+        $this->assertEquals("Modified by Test", $physicalContent->name);
     }
 
-    public function testDeletePhysicalContainer(): void
+    public function testDeletePhysicalContent(): void
     {
         $client = self::createClient();
 
-        $physicalContainerIri = $this->findIriBy(PhysicalContainer::class, ['name' => 'Modified by Test']);
+        $physicalContentIri = $this->findIriBy(PhysicalContent::class, ['name' => 'Modified by Test']);
 
         //assert bad response w/ user
         try {
-            $client->request('DELETE', $physicalContainerIri, [
+            $client->request('DELETE', $physicalContentIri, [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -155,12 +141,12 @@ class PhysicalContainerTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        $client->request('DELETE', $physicalContainerIri, [
+        $client->request('DELETE', $physicalContentIri, [
             'headers' => ['Content-Type' => 'application/json'],
             'auth_bearer' => self::$adminToken
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertNull($this->findIriBy(PhysicalContainer::class, ['name' => 'Modified by Test']));
+        $this->assertNull($this->findIriBy(PhysicalContent::class, ['name' => 'Modified by Test']));
     }
 }

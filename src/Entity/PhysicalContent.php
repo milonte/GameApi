@@ -12,7 +12,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=PhysicalContentRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PhysicalContent:collection"]
+            ]
+        ],
+        "post" => [
+            "denormalization_context" => [
+                "groups" => ["write:PhysicalContent:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !",
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:PhysicalContent:collection"]
+            ]
+        ],
+        "put" => [
+            "denormalization_context" => [
+                "groups" => ["write:PhysicalContent:collection"]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ],
+        "delete" =>  [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Réservé aux ADMINs !"
+        ]
+    ]
+)]
 class PhysicalContent
 {
     /**
@@ -25,7 +58,7 @@ class PhysicalContent
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups("read:Platform:item")]
+    #[Groups(["read:PhysicalContent:collection", "write:PhysicalContent:collection", "read:Platform:item"])]
     private $name;
 
     /**

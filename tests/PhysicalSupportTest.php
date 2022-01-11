@@ -3,14 +3,10 @@
 namespace App\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Game;
-use App\Entity\GameData;
-use App\Entity\Platform;
-use DateTime;
+use App\Entity\PhysicalSupport;
 use Exception;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class GameTest extends ApiTestCase
+class PhysicalSupportTest extends ApiTestCase
 {
     public static $adminToken;
     public static $userToken;
@@ -34,45 +30,41 @@ class GameTest extends ApiTestCase
         ])->toArray()['token'];
     }
 
-    public function testRoute(): void
+    public function getRoute()
     {
         $client = self::createClient();
 
         // assert response return 401 when no JWT Token provided
-        $client->request('GET', '/api/games');
+        $client->request('GET', '/api/physical_supports');
         $this->assertResponseStatusCodeSame(401);
         $this->assertJsonContains(['message' => 'JWT Token not found']);
 
         // assert response for USER (and ADMIN) with token
-        $client->request('GET', '/api/games', ['auth_bearer' => self::$userToken]);
+        $client->request('GET', '/api/physical_supports', ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
     }
 
-    public function testGetGame(): void
+    public function testGetPhysicalSupport(): void
     {
         $client = self::createClient();
+
+        $physicalSupportIri = $this->findIriBy(PhysicalSupport::class, ["name" => "Cartridge"]);
 
         // assert response for USER (and ADMIN) with token
-        $response = $client->request('GET', 'api/games/1', ['auth_bearer' => self::$userToken]);
+        $response = $client->request('GET', $physicalSupportIri, ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
 
-        $game = json_decode($response->getContent());
-        $this->assertSame($game->gameData->title, "Title of Game");
-        $this->assertEquals("Platform", $game->platform->name);
-        $this->assertEquals("cover_tomb_raider", $game->cover->slug);
+        $physicalSupport = json_decode($response->getContent());
+        $this->assertSame($physicalSupport->name, "Cartridge");
     }
 
-    public function testPostGame(): void
+    public function testPostPhysicalSupport(): void
     {
         $client = self::createClient();
 
-        $platformIri = $this->findIriBy(Platform::class, ['name' => 'Platform']);
-        $gameDataIri = $this->findIriBy(GameData::class, ['title' => 'Title of Game']);
-        $date = date(DATE_W3C);
-
-        //assert bad response w/ user
+        // assert can't POST as USER
         try {
-            $client->request('POST', 'api/games', [
+            $client->request('POST', 'api/physical_supports', [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -82,40 +74,45 @@ class GameTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        //assert good response w/ ADMIN
-        $response = $client->request('POST', 'api/games', [
+        // assert can't POST value already exists
+        try {
+            $client->request('POST', 'api/physical_supports', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => [
+                    "name" => "Cartridge"
+                ],
+                'auth_bearer' => self::$adminToken
+            ])->getContent();
+        } catch (Exception $e) {
+            $this->assertResponseStatusCodeSame(500);
+            $this->assertStringContainsString("Duplicate entry 'Cartridge'", $e->getMessage());
+        }
+
+        $response = $client->request('POST', 'api/physical_supports', [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [
-                "isbn" => '0000000000',
-                "gameData" => $gameDataIri,
-                "platform" => $platformIri, // "/api/platforms/1"
-                "developers" => ["/api/developers/1"],
-                "publishers" => ["/api/publishers/1"],
-                "releaseDate" => $date,
-                "cover" => "/api/cover_objects/1"
+                "name" => "Test"
             ],
             'auth_bearer' => self::$adminToken
         ]);
+
         $this->assertResponseIsSuccessful();
 
-        $game = json_decode($response->getContent());
+        $physicalSupport = json_decode($response->getContent());
 
-        $this->assertEquals($gameDataIri, $game->gameData);
-        $this->assertEquals($platformIri, $game->platform);
-        $this->assertEquals($date, $game->releaseDate);
-        $this->assertEquals("/api/cover_objects/1", $game->cover);
+        $this->assertEquals("Test", $physicalSupport->name);
     }
 
-    public function testPutGame(): void
+    public function testPutPhysicalSupport(): void
     {
+
         $client = self::createClient();
 
-        $gameIri = $this->findIriBy(Game::class, ["isbn" => '0000000000']);
-        $date = date(DATE_W3C);
+        $physicalSupportIri = $this->findIriBy(PhysicalSupport::class, ["name" => "Test"]);
 
-        //assert bad response w/ user
+        // assert can't PUT as USER
         try {
-            $client->request('PUT', $gameIri, [
+            $client->request('PUT', $physicalSupportIri, [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -125,28 +122,30 @@ class GameTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        $response = $client->request('PUT', $gameIri, [
+        $response = $client->request('PUT', $physicalSupportIri, [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [
-                "releaseDate" => $date,
+                "name" => "Modified by Test"
             ],
             'auth_bearer' => self::$adminToken
         ]);
+
         $this->assertResponseIsSuccessful();
 
-        $game = json_decode($response->getContent());
-        $this->assertEquals($date, $game->releaseDate);
+        $physicalSupport = json_decode($response->getContent());
+
+        $this->assertEquals("Modified by Test", $physicalSupport->name);
     }
 
-    public function testDeleteGame(): void
+    public function testDeletePhysicalSupport(): void
     {
         $client = self::createClient();
 
-        $gameIri = $this->findIriBy(Game::class, ["isbn" => '0000000000']);
+        $physicalSupportIri = $this->findIriBy(PhysicalSupport::class, ['name' => 'Modified by Test']);
 
         //assert bad response w/ user
         try {
-            $client->request('DELETE', $gameIri, [
+            $client->request('DELETE', $physicalSupportIri, [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -156,12 +155,12 @@ class GameTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        $client->request('DELETE', $gameIri, [
+        $client->request('DELETE', $physicalSupportIri, [
             'headers' => ['Content-Type' => 'application/json'],
             'auth_bearer' => self::$adminToken
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertNull($this->findIriBy(Game::class, ["isbn" => '0000000000']));
+        $this->assertNull($this->findIriBy(PhysicalSupport::class, ['name' => 'Modified by Test']));
     }
 }

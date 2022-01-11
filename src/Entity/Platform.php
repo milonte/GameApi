@@ -22,7 +22,11 @@ use Symfony\Component\Validator\Constraints\Length;
         ],
     ],
     itemOperations: [
-        "get",
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["read:Platform:item"]
+            ]
+        ],
         "put" => [
             "security" => "is_granted('ROLE_ADMIN')",
             "security_message" => "Réservé aux ADMINs !"
@@ -47,7 +51,7 @@ class Platform
      * @ORM\Column(type="string", length=255)
      */
     #[
-        Groups(["read:Game:collection", "write:Game:collection"]),
+        Groups(["read:Game:collection", "write:Game:collection", "read:Platform:item"]),
         Length(min: 3, minMessage: "{{ limit }} caractères minimum !")
     ]
     private $name;
@@ -56,6 +60,12 @@ class Platform
      * @ORM\OneToMany(targetEntity=Game::class, mappedBy="platform")
      */
     private $games;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=PlatformBaseContent::class)
+     */
+    #[Groups("read:Platform:item")]
+    private $platformBaseContent;
 
     public function __construct()
     {
@@ -105,6 +115,18 @@ class Platform
                 $game->setPlatform(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPlatformBaseContent(): ?PlatformBaseContent
+    {
+        return $this->platformBaseContent;
+    }
+
+    public function setPlatformBaseContent(?PlatformBaseContent $platformBaseContent): self
+    {
+        $this->platformBaseContent = $platformBaseContent;
 
         return $this;
     }

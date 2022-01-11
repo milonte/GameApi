@@ -3,14 +3,11 @@
 namespace App\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Game;
-use App\Entity\GameData;
 use App\Entity\Platform;
-use DateTime;
+use App\Entity\PlatformBaseContent;
 use Exception;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class GameTest extends ApiTestCase
+class PlatformTest extends ApiTestCase
 {
     public static $adminToken;
     public static $userToken;
@@ -39,40 +36,39 @@ class GameTest extends ApiTestCase
         $client = self::createClient();
 
         // assert response return 401 when no JWT Token provided
-        $client->request('GET', '/api/games');
+        $client->request('GET', '/api/platforms');
         $this->assertResponseStatusCodeSame(401);
         $this->assertJsonContains(['message' => 'JWT Token not found']);
 
         // assert response for USER (and ADMIN) with token
-        $client->request('GET', '/api/games', ['auth_bearer' => self::$userToken]);
+        $client->request('GET', '/api/platforms', ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
     }
 
-    public function testGetGame(): void
+    public function testGetPlatform(): void
     {
         $client = self::createClient();
 
         // assert response for USER (and ADMIN) with token
-        $response = $client->request('GET', 'api/games/1', ['auth_bearer' => self::$userToken]);
+        $response = $client->request('GET', 'api/platforms/1', ['auth_bearer' => self::$userToken]);
         $this->assertResponseIsSuccessful();
 
-        $game = json_decode($response->getContent());
-        $this->assertSame($game->gameData->title, "Title of Game");
-        $this->assertEquals("Platform", $game->platform->name);
-        $this->assertEquals("cover_tomb_raider", $game->cover->slug);
+        $platform = json_decode($response->getContent());
+        $this->assertSame($platform->name, "Platform");
+        $this->assertSame($platform->platformBaseContent->physicalSupport->name, "Other");
+        $this->assertSame($platform->platformBaseContent->physicalContainer->name, "Other");
+        $this->assertSame($platform->platformBaseContent->physicalContent[0]->name, "Book");
     }
 
-    public function testPostGame(): void
+    public function testPostPlatform(): void
     {
         $client = self::createClient();
 
-        $platformIri = $this->findIriBy(Platform::class, ['name' => 'Platform']);
-        $gameDataIri = $this->findIriBy(GameData::class, ['title' => 'Title of Game']);
-        $date = date(DATE_W3C);
+        $platformBaseContentIri = $this->findIriBy(PlatformBaseContent::class, ['id' => 1]);
 
         //assert bad response w/ user
         try {
-            $client->request('POST', 'api/games', [
+            $client->request('POST', 'api/platforms', [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -80,42 +76,52 @@ class GameTest extends ApiTestCase
         } catch (Exception $e) {
             $this->assertStringContainsString('Réservé aux ADMINs !', $e->getMessage());
             $this->assertEquals(403, $e->getCode());
+        }
+
+        //assert too short name
+        try {
+            $client->request('POST', 'api/platforms', [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => [
+                    "name" => "a",
+                    "platformBaseContent" => $platformBaseContentIri
+
+                ],
+                'auth_bearer' => self::$adminToken
+            ])->getContent();
+        } catch (Exception $e) {
+            $this->assertEquals(422, $e->getCode());
+            $this->assertStringContainsString("caractères minimum !", $e->getMessage());
         }
 
         //assert good response w/ ADMIN
-        $response = $client->request('POST', 'api/games', [
+        $response = $client->request('POST', 'api/platforms', [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [
-                "isbn" => '0000000000',
-                "gameData" => $gameDataIri,
-                "platform" => $platformIri, // "/api/platforms/1"
-                "developers" => ["/api/developers/1"],
-                "publishers" => ["/api/publishers/1"],
-                "releaseDate" => $date,
-                "cover" => "/api/cover_objects/1"
+                "name" => "Test Platform",
+                "platformBaseContent" => $platformBaseContentIri
+
             ],
             'auth_bearer' => self::$adminToken
         ]);
         $this->assertResponseIsSuccessful();
 
-        $game = json_decode($response->getContent());
+        $platform = json_decode($response->getContent());
 
-        $this->assertEquals($gameDataIri, $game->gameData);
-        $this->assertEquals($platformIri, $game->platform);
-        $this->assertEquals($date, $game->releaseDate);
-        $this->assertEquals("/api/cover_objects/1", $game->cover);
+        $this->assertEquals("Test Platform", $platform->name);
+        $this->assertEquals($platformBaseContentIri, $platform->platformBaseContent);
+        $this->assertSame($platformBaseContentIri, $platform->platformBaseContent);
     }
 
-    public function testPutGame(): void
+    public function testPutPlatform(): void
     {
         $client = self::createClient();
 
-        $gameIri = $this->findIriBy(Game::class, ["isbn" => '0000000000']);
-        $date = date(DATE_W3C);
+        $platformIri = $this->findIriBy(Platform::class, ['name' => 'Test Platform']);
 
         //assert bad response w/ user
         try {
-            $client->request('PUT', $gameIri, [
+            $client->request('PUT', $platformIri, [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -125,28 +131,28 @@ class GameTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        $response = $client->request('PUT', $gameIri, [
+        $response = $client->request('PUT', $platformIri, [
             'headers' => ['Content-Type' => 'application/json'],
             'json' => [
-                "releaseDate" => $date,
+                "name" => "Test Platform Modified",
             ],
             'auth_bearer' => self::$adminToken
         ]);
         $this->assertResponseIsSuccessful();
 
-        $game = json_decode($response->getContent());
-        $this->assertEquals($date, $game->releaseDate);
+        $platform = json_decode($response->getContent());
+        $this->assertEquals("Test Platform Modified", $platform->name);
     }
 
-    public function testDeleteGame(): void
+    public function testDeletePlatform(): void
     {
         $client = self::createClient();
 
-        $gameIri = $this->findIriBy(Game::class, ["isbn" => '0000000000']);
+        $platformIri = $this->findIriBy(Platform::class, ['name' => 'Test Platform Modified']);
 
         //assert bad response w/ user
         try {
-            $client->request('DELETE', $gameIri, [
+            $client->request('DELETE', $platformIri, [
                 'headers' => ['Content-Type' => 'application/json'],
                 'json' => [],
                 'auth_bearer' => self::$userToken
@@ -156,12 +162,12 @@ class GameTest extends ApiTestCase
             $this->assertEquals(403, $e->getCode());
         }
 
-        $client->request('DELETE', $gameIri, [
+        $client->request('DELETE', $platformIri, [
             'headers' => ['Content-Type' => 'application/json'],
             'auth_bearer' => self::$adminToken
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertNull($this->findIriBy(Game::class, ["isbn" => '0000000000']));
+        $this->assertNull($this->findIriBy(Platform::class, ['name' => 'Test Platform Modified']));
     }
 }

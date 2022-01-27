@@ -118,7 +118,7 @@ class Game
     private $tags;
 
     /**
-     * @ORM\ManyToOne(targetEntity=CoverObject::class)
+     * @ORM\ManyToOne(targetEntity=CoverObject::class, inversedBy="games")
      */
     #[ApiProperty(iri: 'http://schema.org/image')]
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
@@ -130,7 +130,7 @@ class Game
     private $gamesCollections;
 
     /**
-     * @ORM\ManyToOne(targetEntity=GameData::class)
+     * @ORM\ManyToOne(targetEntity=GameData::class, inversedBy="games")
      */
     #[Groups(["read:Game:collection", "write:Game:collection", "put:Game:collection"])]
     private $gameData;
@@ -321,6 +321,13 @@ class Game
     public function setIsbn(string $isbn): self
     {
         $this->isbn = $isbn;
+
+        return $this;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

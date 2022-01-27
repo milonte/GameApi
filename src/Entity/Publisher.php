@@ -31,9 +31,15 @@ class Publisher
      */
     private $games;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=GameData::class, mappedBy="publishers")
+     */
+    private $gameData;
+
     public function __construct()
     {
         $this->games = new ArrayCollection();
+        $this->gameData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +81,33 @@ class Publisher
     {
         if ($this->games->removeElement($game)) {
             $game->removePublisher($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GameData[]
+     */
+    public function getGameData(): Collection
+    {
+        return $this->gameData;
+    }
+
+    public function addGameData(GameData $gameData): self
+    {
+        if (!$this->gameData->contains($gameData)) {
+            $this->gameData[] = $gameData;
+            $gameData->addPublisher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameData(GameData $gameData): self
+    {
+        if ($this->gameData->removeElement($gameData)) {
+            $gameData->removePublisher($this);
         }
 
         return $this;

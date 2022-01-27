@@ -50,9 +50,15 @@ class Tag
      */
     private $games;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=GameData::class, mappedBy="tags")
+     */
+    private $gameData;
+
     public function __construct()
     {
         $this->games = new ArrayCollection();
+        $this->gameData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,6 +100,33 @@ class Tag
     {
         if ($this->games->removeElement($game)) {
             $game->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GameData[]
+     */
+    public function getGameData(): Collection
+    {
+        return $this->gameData;
+    }
+
+    public function addGameData(GameData $gameData): self
+    {
+        if (!$this->gameData->contains($gameData)) {
+            $this->gameData[] = $gameData;
+            $gameData->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameData(GameData $gameData): self
+    {
+        if ($this->gameData->removeElement($gameData)) {
+            $gameData->removeTag($this);
         }
 
         return $this;

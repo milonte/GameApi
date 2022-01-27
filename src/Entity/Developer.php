@@ -50,9 +50,15 @@ class Developer
      */
     private $games;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=GameData::class, mappedBy="developer")
+     */
+    private $gameData;
+
     public function __construct()
     {
         $this->games = new ArrayCollection();
+        $this->gameData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,6 +100,33 @@ class Developer
     {
         if ($this->games->removeElement($game)) {
             $game->removeDeveloper($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GameData[]
+     */
+    public function getGameData(): Collection
+    {
+        return $this->gameData;
+    }
+
+    public function addGameData(GameData $gameData): self
+    {
+        if (!$this->gameData->contains($gameData)) {
+            $this->gameData[] = $gameData;
+            $gameData->addDeveloper($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameData(GameData $gameData): self
+    {
+        if ($this->gameData->removeElement($gameData)) {
+            $gameData->removeDeveloper($this);
         }
 
         return $this;

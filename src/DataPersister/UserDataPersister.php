@@ -22,7 +22,7 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
         return $data instanceof User;
     }
 
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
         $hashedPassword = $this->passwordHasher->hashPassword(
             $data,
@@ -34,7 +34,7 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
         $this->entityManager->flush();
     }
 
-    public function remove($data, array $context = [])
+    public function remove($data, array $context = []): void
     {
         // call your persistence layer to delete $data
     }

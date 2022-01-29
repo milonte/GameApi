@@ -21,7 +21,7 @@ final class GameDataPersister implements ContextAwareDataPersisterInterface
         return $data instanceof Game;
     }
 
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
         $data->setUpdatedAt(new DateTimeImmutable());
         // call your persistence layer to save $data
@@ -29,7 +29,7 @@ final class GameDataPersister implements ContextAwareDataPersisterInterface
         $this->entityManager->flush();
     }
 
-    public function remove($data, array $context = [])
+    public function remove($data, array $context = []): void
     {
         // If cover will be orphan, remove it
         if ($data->getCover() && 1 === count($data->getCover()->getGames())) {

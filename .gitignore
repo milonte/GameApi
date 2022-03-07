@@ -31,3 +31,4 @@
 ###< symfony/phpunit-bridge ###
 
 /docker/mysql/
+/docker/nginx/certs/*

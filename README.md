@@ -1,100 +1,163 @@
-How to setup
+# GameApi
+`simple Api project with ApiPlatform and Docker`
 
-install docker compose
-install brew https://www.how2shout.com/linux/how-to-install-brew-ubuntu-20-04-lts-linux/
-brew install mkcert
+## How to setup
 
+### Initialization 
+
+- install docker compose
+- clone this repo
+```
 git clone project
+```
+- move to project folder
+```
 cd GameApi
+```
 
-setup .env (dev & test)
+setup .env.local & .env.test.local
 
+- build docker images
+```
 docker-compose build
+```
 
+### Install certificates
 
-##### install certificates #####
+> if work on windows with WSL, type consoles commands on WSL terminal
 
-https://dev.to/ashleyconnor/configuring-self-signed-ssl-certificates-for-local-development-35c5
+- install brew https://www.how2shout.com/linux/how-to-install-brew-ubuntu-20-04-lts-linux/
+- install mkcert
+```
+brew install mkcert
+```
 
-console :
+- make certificates
+```
 mkdir docker/nginx/certs
 cd docker/nginx/certs/
 mkcert localhost 127.0.01 gameapi ::1
 mkcert -install
+```
 
-change .pem generated names to localhost-key.pem and localhost.pem
+change .pem generated names to `localhost-key.pem` and `localhost.pem`
 
-*** if work on windows with WSL, type consoles commands on WSL terminal ***
-
-console : 
+- back to project folder
+``` 
 cd ../../..
-sudo nano /etc/hosts
+```
 
-add ->
+- modify hosts config
+```
+sudo nano /etc/hosts
+```
+
+- copy to /etc/hosts
+```
 127.0.0.1 gameapi
 ::1 gameapi
+```
 
-console :
+- create a wsl config file
+```
 sudo touch /etc/wsl.conf
 sudo nano /etc/wsl.conf
+```
 
-add ->
+- and copy to /etc/wsl.conf
+```
 [network]
 generateHosts = false
+```
 
-console :
+- up docker
+```
 docker-compose up
+```
+
+- verify API host response
+```
 curl https://gameapi
+```
 
-##### bonus configuration if working un Win with WSL #####
+### bonus configuration if working on Win with WSL
 
-WSL terminal :
+- in WSL terminal
+```
 mkcert -CAROOT (default is /home/USER/.local/share/mkcert)
+```
 
-Win PowerShell :
+- in Win PowerShell
+```
 $CAROOT="\\wsl$\Ubuntu\home\USER\.local\share\mkcert\"
 mkcert -install
+```
 
-Windows -> import certificate
-\\wsl$\Ubuntu\home\USER\.local\share\mkcert\rootCA.pem
+- Import certificate in Windows
+`\\wsl$\Ubuntu\home\USER\.local\share\mkcert\rootCA.pem`
 in trusted certificates
 
-Windows -> edit C:/Windows/System32/drivers/etc/hosts
-add ->
+- Add host
+```
+code C:/Windows/System32/drivers/etc/hosts
+```
+
+- add to host file
+```
 127.0.0.1 gameapi
 ::1 gameapi
+```
 
-restart WSL
+- restart WSL
 
-Powershell :
+- try API response in Windows powershell
+```
 curl https://gameapi/api
+```
 
-try URL in browser
+- try URL in browser `https://gameapi/api`
 
 certificate (for postman or other) is in :
-\\wsl$\Ubuntu\home\milonte\.local\share\mkcert\rootCA.pem
+`\\wsl$\Ubuntu\home\milonte\.local\share\mkcert\rootCA.pem`
 
-##### end of bonus configuration #####
+### Symfony project setup
 
-##### symfony project setup #####
+#### Make JWT certs
 
-## make jwt certs
-PHP-CLI : 
+- in PHP-CLI
+```
 mkdir -p config/jwt
 openssl genrsa -out config/jwt/private.pem -aes256 4096
-(same passphrase as .env.local)
+```
+> (same passphrase as .env.local)
 
-PHP-CLI : 
+```
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
-(same passphrase as .env.local)
+```
+> (same passphrase as .env.local)
 
-command :
+- up Docker
+```
 docker-compose up
+```
+#### Install composer packages
 
-PHP-CLI :
+- in PHP-CLI
+```
 composer install
+```
+
+#### Setup databases
+
+- in PHP-CLI
+```
 symfony console d:m:migrate
 symfony console d:f:l
 symfony console d:d:c --env=test
 symfony console d:m:migrate --env=test
+```
+
+#### Run phpunit tests
+
+- in PHP-CLI
 .vendor/bin/phpunit

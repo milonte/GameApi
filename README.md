@@ -160,4 +160,6 @@ symfony console d:m:migrate --env=test
 #### Run phpunit tests
 
 - in PHP-CLI
+```
 .vendor/bin/phpunit
+```

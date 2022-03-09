@@ -136,10 +136,6 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 ```
 > (same passphrase as .env.local)
 
-- up Docker
-```
-docker-compose up
-```
 #### Install composer packages
 
 - in PHP-CLI
@@ -161,5 +157,5 @@ symfony console d:m:migrate --env=test
 
 - in PHP-CLI
 ```
-.vendor/bin/phpunit
+vendor/bin/phpunit
 ```

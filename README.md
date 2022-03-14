@@ -1,5 +1,5 @@
 # GameApi
-`simple Api project with ApiPlatform and Docker`
+> simple Api project with ApiPlatform and Docker
 
 ## How to setup
 
@@ -34,13 +34,23 @@ brew install mkcert
 
 - make certificates
 ```
-mkdir docker/nginx/certs
-cd docker/nginx/certs/
-mkcert localhost 127.0.01 gameapi ::1
-mkcert -install
+mkdir docker/traefik/certs
+cd docker/traefik/certs/
 ```
 
-change .pem generated names to `localhost-key.pem` and `localhost.pem`
+```
+mkcert localhost 127.0.0.1 gameapi ::1
+```
+> change .pem generated names to `gameapi-key.pem` and `gameapi.pem`
+
+```
+mkcert localhost 127.0.0.1 gameclient ::1
+```
+> change .pem generated names to `gameclient-key.pem` and `gameclient.pem`
+
+```
+mkcert -install
+```
 
 - back to project folder
 ``` 
@@ -56,6 +66,8 @@ sudo nano /etc/hosts
 ```
 127.0.0.1 gameapi
 ::1 gameapi
+127.0.0.1 gameclient
+::1 gameclient
 ```
 
 - create a wsl config file
@@ -69,6 +81,7 @@ sudo nano /etc/wsl.conf
 [network]
 generateHosts = false
 ```
+> disable auto generation of hosts file from Docker
 
 - up docker
 ```
@@ -78,9 +91,11 @@ docker-compose up
 - verify API host response
 ```
 curl https://gameapi/api
+curl https://gameclient
 ```
+> try with HTTP instead of HTTPS and check redirection
 
-### bonus configuration if working on Win with WSL
+### bonus configuration if working on Windows with WSL
 
 - in WSL terminal
 ```
@@ -106,6 +121,8 @@ code C:/Windows/System32/drivers/etc/hosts
 ```
 127.0.0.1 gameapi
 ::1 gameapi
+127.0.0.1 gameclient
+::1 gameclient
 ```
 
 - restart WSL
@@ -116,6 +133,8 @@ curl https://gameapi/api
 ```
 
 - try URL in browser `https://gameapi/api`
+- try URL in browser `https://gameclient`
+> try with HTTP instead of HTTPS and check redirection
 
 certificate (for postman or other) is in :
 `\\wsl$\Ubuntu\home\milonte\.local\share\mkcert\rootCA.pem`

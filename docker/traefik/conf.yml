@@ -1,0 +1,6 @@
+tls:
+  certificates:
+    - certFile: /etc/certs/gameapi.pem
+      keyFile: /etc/certs/gameapi-key.pem
+    - certFile: /etc/certs/gameclient.pem
+      keyFile: /etc/certs/gameclient-key.pem

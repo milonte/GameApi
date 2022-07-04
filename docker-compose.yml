@@ -4,7 +4,7 @@ services:
 
     database:
         container_name: database
-        image: mysql:8.0
+        image: mysql:latest
         restart: always
         environment:
             - MYSQL_DATABASE=${DATABASE_NAME}
